@@ -1,8 +1,9 @@
 import simple_screen
 import panel_screen
+import register_user_options
 
 def click_button_register():
-    print('register')
+    register_user_options.register_user_options()
 
 def click_button_update():
     print('update')

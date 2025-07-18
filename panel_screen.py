@@ -1,5 +1,5 @@
 import simple_screen
-import register_user
+import register_user_screen
 import list_prod
 import show_prod_list
 import exec_prod
@@ -7,7 +7,7 @@ import exec_prod
 
 def register_users():
     simple_screen.window.destroy()
-    register_user.register_user_screen()
+    register_user_screen.register_user_screen()
 
 def register_prodution_list():
     simple_screen.window.destroy()

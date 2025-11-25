@@ -5,6 +5,7 @@ from passlib.hash import bcrypt
 
 #Declaração de variáveis
 success_login = False
+nick_name = None
 #Declaração de variáveis mysql
 sql = 'SELECT * FROM access_login'
 conection.mycursor.execute(sql)
@@ -13,12 +14,14 @@ myresult = conection.mycursor.fetchall()
 #Função acionada ao clicar no botão
 def Click ():
     global success_login
+    global nick_name
     up_to = len(myresult)
     count_invalid = 0
     for x in range(0, up_to):
-        if(user.get() == myresult[x][1] and bcrypt.verify(password.get(), myresult[1][2])==True):
+        if(bcrypt.verify(user.get(), myresult[x][1])==True and bcrypt.verify(password.get(), myresult[x][2])==True):
             print('Login Success')
             success_login = True
+            nick_name = myresult[x][3]
             time.sleep(1)
             window.destroy()
         else:

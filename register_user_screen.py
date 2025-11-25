@@ -1,15 +1,15 @@
 import simple_screen
 import panel_screen
 import register_user
+import delete_user
 
 def click_button_register():
-    register_user.register_user_options()
-
-def click_button_update():
-    print('update')
+    simple_screen.window.destroy()
+    register_user.register_user()
 
 def click_button_delete():
-    print('delete')
+    simple_screen.window.destroy()
+    delete_user.delete_user()
 
 def click_button_return():
     simple_screen.window.destroy()
@@ -18,7 +18,6 @@ def click_button_return():
 def register_user_screen():
     buttons_list = []
     buttons_list.append(simple_screen.ArrayButton('CADASTRAR', 'DodgerBlue2', 'SteelBlue2', click_button_register, 'r-user'))
-    buttons_list.append(simple_screen.ArrayButton('ATUALIZAR', 'DodgerBlue2', 'SteelBlue2', click_button_update, 'u-user'))
     buttons_list.append(simple_screen.ArrayButton('EXCLUIR', 'DodgerBlue2', 'SteelBlue2', click_button_delete, 'd-user'))
     buttons_list.append(simple_screen.ArrayButton('VOLTAR', 'red', 'red4', click_button_return, 'return'))
 

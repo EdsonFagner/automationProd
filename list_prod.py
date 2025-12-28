@@ -7,6 +7,7 @@ from tkinter import *
 from customtkinter import *
 from tkinter import messagebox
 import login_func
+import delete_production
 
 
 def add_widgets_func(window):
@@ -15,16 +16,50 @@ def add_widgets_func(window):
     conection.mycursor.execute(sql_register_users)
     myresult_register_users = conection.mycursor.fetchall()
 
+    global family_option
+    global input_date
+
     text_family = customtkinter.CTkLabel(window, text='Responsável Familiar:')
     type_family = [str(myresult_register_users[i][1]) for i in range(0, len(myresult_register_users))]
     family_option = customtkinter.CTkOptionMenu(window, values=type_family)
 
+    input_date = customtkinter.CTkEntry(window, placeholder_text="Data:")
+
     text_family.pack(padx=10, pady=10)
     family_option.pack(padx=10, pady=10)
+    input_date.pack(padx=10, pady=10)
 
 
 def click_button_insert_family():
-    print('insert family')
+
+    name_family = family_option.get()
+    date = input_date.get()
+
+    # Use parameterized query: the column name must be a literal in SQL
+    # here we assume the column that stores the family name is called `name`
+    sql_register_user = f"SELECT quantity FROM register_user_{login_func.nick_name} WHERE name = %s"
+    conection.mycursor.execute(sql_register_user, (name_family,))
+    myresult_register_user = conection.mycursor.fetchone()
+
+    # myresult_register_user will be a single row like (quantity,), or None
+    if myresult_register_user:
+        quantity = myresult_register_user[0]
+    else:
+        quantity = 0
+
+    conection.mycursor.execute(
+        f"INSERT INTO prod_{login_func.nick_name} (name, date, quantity) VALUES (%s, %s, %s)",
+        (name_family, date, quantity)
+    )
+    conection.mydb.commit()
+
+    family_option.set('')
+    input_date.delete(0, 'end')
+    
+    
+    messagebox.showinfo("Sucesso", "Cadastro realizado com sucesso!")
+
+
 
 def click_button_simple():
     simple_screen.window.destroy()
@@ -57,7 +92,8 @@ def click_button_update():
     print('update')
 
 def click_button_delete():
-    print('delete')
+    simple_screen.window.destroy()
+    delete_production.delete_production()
 
 def click_button_return():
     simple_screen.window.destroy()

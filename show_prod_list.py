@@ -3,7 +3,6 @@ import panel_screen
 import customtkinter
 import login_func
 import conection
-from tkinter import messagebox
 import tkinter as tk
 from tkinter import ttk
 
@@ -73,7 +72,7 @@ def show_prod_list():
 
     buttons_list.append(simple_screen.ArrayButton('VOLTAR',  'red', 'red4',  click_button_return, 'return'))
 
-    simple_screen.create_screen('500x400', 'Deletar Produção', buttons_list, add_widgets_func)
+    simple_screen.create_screen('500x400', 'Exibir Lista', buttons_list, add_widgets_func)
 
 
 if __name__ == '__main__':

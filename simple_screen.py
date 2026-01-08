@@ -1,4 +1,5 @@
 import customtkinter
+import tk_async_execute as tk_async
 
 class ArrayButton:
     def __init__(self, textButton, fgColor, hvColor, commandFunction, nameButton):
@@ -13,6 +14,7 @@ def create_button(window, textButton, fgColor, hvColor, commandFunction, nameBut
     return btn
 
 def show_button(window, arrayButtons):
+    global buttons
     buttons = []
     for btn_obj in arrayButtons:
         btn = create_button(window, btn_obj.textButton, btn_obj.fgColor, btn_obj.hvColor, btn_obj.commandFunction, btn_obj.nameButton)

@@ -14,7 +14,7 @@ def add_widgets_func(window):
     try:
         conection.mycursor.execute(sql_register_street)
         myresult_register_street = conection.mycursor.fetchall()
-    except mysql.connector.errors.OperationalError:
+    except mysql.connector.OperationalError:
         # try to reconnect once and retry the query
         try:
             conection.reconnect()

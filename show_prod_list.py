@@ -5,13 +5,35 @@ import login_func
 import conection
 import tkinter as tk
 from tkinter import ttk
+from tkinter import messagebox
 
 def add_widgets_func(window):
     print('show_prod_list')
+    query = ''
+    params = None
+
+    if not conection.pool_conexoes:
+        messagebox.showerror("Erro", "Erro ao acessar o banco de dados, não existe pool de conexões.")
+        return None
+    
+    try:
+        query = f'SELECT * FROM prod_{login_func.nick_name}'
+        with conection.pool_conexoes.get_connection() as connection:
+            print('Conectado ao banco de dados')
+            with conection.mydb.cursor() as mycursor:
+                mycursor.execute(query, params)
+                if query.strip().upper().startswith('SELECT'):
+                    myresult_show_prod_list = mycursor.fetchall()
+                else:
+                    messagebox.showinfo("Erro", "Não foi possivel executar a query.")
+
+    except conection.mysql.connector.Error as err:
+        messagebox.showerror("Erro", f"Erro ao acessar o banco de dados: {err}")
+        return None
     # Mostrar uma lista com todas as inserções na lista de produção do usuário logado na tabela prod_login_name
-    sql_show_prod_list = f'SELECT * FROM prod_{login_func.nick_name}'
-    conection.mycursor.execute(sql_show_prod_list)
-    myresult_show_prod_list = conection.mycursor.fetchall()
+    #sql_show_prod_list = f'SELECT * FROM prod_{login_func.nick_name}'
+    #conection.mycursor.execute(sql_show_prod_list)
+    #myresult_show_prod_list = conection.mycursor.fetchall()
 
     # Se não houver registros, mostrar mensagem e sair
     if not myresult_show_prod_list:

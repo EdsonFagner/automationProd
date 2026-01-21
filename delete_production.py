@@ -13,7 +13,7 @@ def add_widgets_func(window):
     try:
         conection.mycursor.execute(sql_date)
         myresult_date = conection.mycursor.fetchall()
-    except mysql.connector.errors.OperationalError:
+    except mysql.connector.OperationalError:
         # try to reconnect once and retry the query
         try:
             conection.reconnect()
@@ -29,7 +29,7 @@ def add_widgets_func(window):
     try:
         conection.mycursor.execute(sql_name)
         myresult_name = conection.mycursor.fetchall()
-    except mysql.connector.errors.OperationalError:
+    except mysql.connector.OperationalError:
         # try to reconnect once and retry the query
         try:
             conection.reconnect()

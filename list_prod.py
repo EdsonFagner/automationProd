@@ -13,8 +13,7 @@ import delete_production
 def add_widgets_func(window):
 
     sql_register_users = f'SELECT * FROM register_user_{login_func.nick_name}'
-    conection.mycursor.execute(sql_register_users)
-    myresult_register_users = conection.mycursor.fetchall()
+    myresult_register_users = conection.execute_query(sql_register_users, params=None, fetch=True)
 
     global family_option
     global input_date
@@ -38,8 +37,7 @@ def click_button_insert_family():
     # Use parameterized query: the column name must be a literal in SQL
     # here we assume the column that stores the family name is called `name`
     sql_register_user = f"SELECT quantity FROM register_user_{login_func.nick_name} WHERE name = %s"
-    conection.mycursor.execute(sql_register_user, (name_family,))
-    myresult_register_user = conection.mycursor.fetchone()
+    myresult_register_user = conection.execute_query(sql_register_user, params=(str(name_family)), fetch=False, fetchone=True)
 
     # myresult_register_user will be a single row like (quantity,), or None
     if myresult_register_user:
@@ -47,11 +45,12 @@ def click_button_insert_family():
     else:
         quantity = 0
 
-    conection.mycursor.execute(
+    # Inserindo os dados na tabela
+    conection.execute_query(
         f"INSERT INTO prod_{login_func.nick_name} (name, date, quantity) VALUES (%s, %s, %s)",
-        (name_family, date, quantity)
+        (str(name_family), str(date), str(quantity)),
+        fetch=False
     )
-    conection.mydb.commit()
 
     family_option.set('')
     input_date.delete(0, 'end')

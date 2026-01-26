@@ -1,5 +1,4 @@
 import conection
-import keyboard
 import navigator_func
 import asyncio
 import login_func
@@ -43,8 +42,7 @@ async def func_exec_prod(scheduler_state):
         
     #Loop para pegar a lista de produção do banco de dados e executar as produções uma a uma
     sql_show_prod_list = f'SELECT * FROM prod_{login_func.nick_name}'
-    conection.mycursor.execute(sql_show_prod_list)
-    myresult_show_prod_list = conection.mycursor.fetchall()
+    myresult_show_prod_list = conection.execute_query(sql_show_prod_list, params=None, fetch=True)
 
     if myresult_show_prod_list:
         for i in range(0, len(myresult_show_prod_list)):

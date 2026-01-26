@@ -7,8 +7,7 @@ from tkinter import messagebox
 
 #Declaração de variáveis mysql
 sqlAcess = 'SELECT * FROM access_login'
-conection.mycursor.execute(sqlAcess)
-myresultAcess = conection.mycursor.fetchall()
+myresultAcess = conection.execute_query(sqlAcess, params=None)
 table_nickname = None
 countIncorrect = 0
 
@@ -29,6 +28,7 @@ def add_widgets_func(window):
 
 
 def register():
+    global countIncorrect
     
     for x in range(0, len(myresultAcess)):
         nickName = myresultAcess[x][3]
@@ -37,9 +37,18 @@ def register():
             quantity_members = input_quantity.get()
             street_name = input_street.get()
             table_nickname = f'register_user_{nickName}'
-            conection.mycursor.execute(f'INSERT INTO {table_nickname} (name, quantity, street_name) VALUES (%s, %s, %s)', (name_owner, quantity_members, street_name))
-            conection.mydb.commit()
-            messagebox.showinfo("Sucesso", "Cadastro realizado com sucesso!")
+
+            query = f'INSERT INTO {table_nickname} (name, quantity, street_name) VALUES (%s, %s, %s)'
+            params = (str(name_owner), int(quantity_members), str(street_name))
+            resultado = conection.execute_query(query, params, fetch=False)
+            
+            # Verificar se o insert foi bem-sucedido
+            if resultado and resultado > 0:
+                messagebox.showinfo("Sucesso", "Cadastro realizado com sucesso!")
+            else:
+                messagebox.showerror("Erro", "Falha ao inserir registro no banco de dados!")
+                return
+            
             input_name.delete(0, 'end')
             input_quantity.delete(0, 'end')
             input_street.delete(0, 'end')

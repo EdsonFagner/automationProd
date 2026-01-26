@@ -12,14 +12,12 @@ def add_widgets_func(window):
     sql_register_street = f'SELECT DISTINCT street_name FROM register_user_{login_func.nick_name}'
     # execute with basic retry in case the connection was lost
     try:
-        conection.mycursor.execute(sql_register_street)
-        myresult_register_street = conection.mycursor.fetchall()
+        myresult_register_street = conection.execute_query(sql_register_street, params=None, fetch=True)
     except mysql.connector.OperationalError:
         # try to reconnect once and retry the query
         try:
             conection.reconnect()
-            conection.mycursor.execute(sql_register_street)
-            myresult_register_street = conection.mycursor.fetchall()
+            myresult_register_street = conection.execute_query(sql_register_street, params=None, fetch=True)
         except Exception as e:
             messagebox.showerror("Erro", f"Erro ao acessar o banco: {e}")
             myresult_register_street = []
@@ -51,8 +49,7 @@ def click_button_insert():
 
     #Pegar usuários aleatóriamente da rua em questão até formar a quantidade exata ou maior de pessoas e inserir no banco de dados
     sql_register_users = f'SELECT * FROM register_user_{login_func.nick_name} WHERE street_name = "{street_name}"'
-    conection.mycursor.execute(sql_register_users)
-    myresult_register_users = conection.mycursor.fetchall()
+    myresult_register_users = conection.execute_query(sql_register_users, params=None, fetch=True)
     users = [str(myresult_register_users[i][1]) for i in range(0, len(myresult_register_users))]
     random.shuffle(users)
 
@@ -64,23 +61,18 @@ def click_button_insert():
         
         #Pegando a quantidade de membros da família do usuário
         sql_quantity_users = f'SELECT quantity FROM register_user_{login_func.nick_name} WHERE name = "{users[i]}"'
-        conection.mycursor.execute(sql_quantity_users)
-        myresult_quantity_users = conection.mycursor.fetchone()
+        myresult_quantity_users = conection.execute_query(sql_quantity_users, params=None, fetch=True)
 
         #Incrementando a quantidade de usuários na contagem do looping
-        quantity_members_family += myresult_quantity_users[0]
+        quantity_members_family += myresult_quantity_users[0][0]  # Extrai o valor da tupla
 
         #Pegando o nome do usuário e a quantidade de pessoas dele
         name_family = users[i]
-        quantity_members = myresult_quantity_users[0]
+        quantity_members = myresult_quantity_users[0][0]  # Extrai o valor da tupla
 
 
         #Inserindo os dados no banco
-        conection.mycursor.execute(
-            f"INSERT INTO prod_{login_func.nick_name} (name, date, quantity) VALUES (%s, %s, %s)",
-            (name_family, date, quantity_members)
-        )
-        conection.mydb.commit()
+        conection.execute_query(f"INSERT INTO prod_{login_func.nick_name} (name, date, quantity) VALUES (%s, %s, %s)", (str(name_family), str(date), int(quantity_members)), fetch=False)
 
     street_option.set('')
     input_quantity.delete(0, 'end')

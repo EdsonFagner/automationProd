@@ -7,8 +7,7 @@ from tkinter import messagebox
 
 #Declaração de variáveis mysql
 sqlAcess = 'SELECT * FROM access_login'
-conection.mycursor.execute(sqlAcess)
-myresultAcess = conection.mycursor.fetchall()
+myresultAcess = conection.execute_query(sqlAcess, params=None, fetch=True)
 table_nickname = None
 
 
@@ -35,17 +34,14 @@ def delete():
             name_owner = input_name.get()
             street_name = input_street.get()
             table_nickname = f'register_user_{nickName}'
-            mycursor = conection.mycursor
-            mycursor.execute(f'SELECT * FROM {table_nickname}')
-            result = mycursor.fetchall()
+            result = conection.execute_query(f'SELECT * FROM {table_nickname}', params=None, fetch=True)
             if result:
                 print(f'Chegou no if result')
                 countIncorrect = 0
                 for y in range(0, len(result)):
                     print(f'Chegou no for result {y}')
                     if result[y][1] == name_owner and result[y][3] == street_name:
-                        conection.mycursor.execute(f'DELETE FROM {table_nickname} WHERE name = %s AND street_name = %s', (name_owner, street_name))
-                        conection.mydb.commit()
+                        conection.execute_query(f'DELETE FROM {table_nickname} WHERE name = %s AND street_name = %s', (str(name_owner), str(street_name)), fetch=False)
                         messagebox.showinfo("Sucesso", "Cadastro deletado com sucesso!")
                         input_name.delete(0, 'end')
                         input_street.delete(0, 'end')

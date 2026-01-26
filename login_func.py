@@ -6,19 +6,20 @@ from passlib.hash import bcrypt
 #Declaração de variáveis
 success_login = False
 nick_name = None
+
 #Declaração de variáveis mysql
 sql = 'SELECT * FROM access_login'
-conection.mycursor.execute(sql)
-myresult = conection.mycursor.fetchall()
+myresult = conection.execute_query(sql, params=None, fetch=True)
+
 
 #Função acionada ao clicar no botão
-def Click ():
+def Click (user, password):
     global success_login
     global nick_name
     up_to = len(myresult)
     count_invalid = 0
     for x in range(0, up_to):
-        if(bcrypt.verify(user.get(), myresult[x][1])==True and bcrypt.verify(password.get(), myresult[x][2])==True):
+        if(bcrypt.verify(user, myresult[x][1])==True and bcrypt.verify(password, myresult[x][2])==True):
             print('Login Success')
             success_login = True
             nick_name = myresult[x][3]
@@ -53,7 +54,7 @@ def login():
 
     password = customtkinter.CTkEntry(window, placeholder_text='Senha:', show='*')
 
-    button = customtkinter.CTkButton(window, text='Login', command=Click)
+    button = customtkinter.CTkButton(window, text='Login', command=lambda: Click(user.get(), password.get()))
 
     text.pack(padx=10, pady=10)
     user.pack(padx=10, pady=10)

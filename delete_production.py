@@ -11,14 +11,12 @@ def add_widgets_func(window):
     sql_date = f'SELECT DISTINCT date FROM prod_{login_func.nick_name}'
 
     try:
-        conection.mycursor.execute(sql_date)
-        myresult_date = conection.mycursor.fetchall()
+        myresult_date = conection.execute_query(sql_date, params=None, fetch=True)
     except mysql.connector.OperationalError:
         # try to reconnect once and retry the query
         try:
             conection.reconnect()
-            conection.mycursor.execute(sql_date)
-            myresult_date = conection.mycursor.fetchall()
+            myresult_date = conection.execute_query(sql_date, params=None, fetch=True)
         except Exception as e:
             messagebox.showerror("Erro", f"Erro ao acessar o banco: {e}")
             myresult_date = []
@@ -27,14 +25,12 @@ def add_widgets_func(window):
     sql_name = f'SELECT DISTINCT name FROM prod_{login_func.nick_name}'
 
     try:
-        conection.mycursor.execute(sql_name)
-        myresult_name = conection.mycursor.fetchall()
+        myresult_name = conection.execute_query(sql_name, params=None, fetch=True)
     except mysql.connector.OperationalError:
         # try to reconnect once and retry the query
         try:
             conection.reconnect()
-            conection.mycursor.execute(sql_name)
-            myresult_name = conection.mycursor.fetchall()
+            myresult_name = conection.execute_query(sql_name, params=None, fetch=True)
         except Exception as e:
             messagebox.showerror("Erro", f"Erro ao acessar o banco: {e}")
             myresult_name = []
@@ -66,15 +62,13 @@ def click_button_delete():
     name_selected = name_option.get()
 
     if(date_selected != 'Selecione'):
-        sql_delete = f'DELETE FROM prod_{login_func.nick_name} WHERE date = "{date_selected}"'
-        conection.mycursor.execute(sql_delete)
-        conection.mydb.commit()
+        sql_delete = f'DELETE FROM prod_{login_func.nick_name} WHERE date = %s'
+        conection.execute_query(sql_delete, params=(str(date_selected)), fetch=False)
         messagebox.showinfo("Sucesso", "Produção deletada com sucesso!")
 
     elif(name_selected != 'Selecione'):
-        sql_delete = f'DELETE FROM prod_{login_func.nick_name} WHERE name = "{name_selected}"'
-        conection.mycursor.execute(sql_delete)
-        conection.mydb.commit()
+        sql_delete = f'DELETE FROM prod_{login_func.nick_name} WHERE name = %s'
+        conection.execute_query(sql_delete, params=(str(name_selected)), fetch=False)
         messagebox.showinfo("Sucesso", "Produção deletada com sucesso!")
     
     else:

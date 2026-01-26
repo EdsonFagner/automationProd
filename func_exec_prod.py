@@ -7,9 +7,20 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
+from passlib.hash import bcrypt
+
 
 
 async def func_exec_prod(scheduler_state):
+
+    #Declaração de variáveis mysql
+    sql = f'SELECT login_system FROM access_login WHERE nickname = %s'
+    myresult = conection.execute_query(sql, params=(login_func.nick_name,), fetch=None, fetchone=True)
+
+    sql2 = f'SELECT password_system FROM access_login WHERE nickname = %s'
+    myresult2 = conection.execute_query(sql2, params=(login_func.nick_name,), fetch=None, fetchone=True)
+
+
     await asyncio.sleep(1)
     # Garantir que o navegador esteja inicializado
     if not hasattr(navigator_func, 'navegador'):
@@ -21,10 +32,10 @@ async def func_exec_prod(scheduler_state):
         navigator_func.navegador.find_element(By.XPATH, '//*[@id="LoginView1_lgAcesso_UserName"]').click()
         await asyncio.sleep(1)
         #Digitar usuário
-        navigator_func.navegador.find_element(By.XPATH, '//*[@id="LoginView1_lgAcesso_UserName"]').send_keys('14886471781')
+        navigator_func.navegador.find_element(By.XPATH, '//*[@id="LoginView1_lgAcesso_UserName"]').send_keys(myresult)
         await asyncio.sleep(1)
         #Digitar senha
-        navigator_func.navegador.find_element(By.XPATH, '//*[@id="LoginView1_lgAcesso_Password"]').send_keys('123')
+        navigator_func.navegador.find_element(By.XPATH, '//*[@id="LoginView1_lgAcesso_Password"]').send_keys(myresult2)
         await asyncio.sleep(1)
         navigator_func.navegador.find_element(By.XPATH, '//*[@id="LoginView1_lgAcesso_Password"]').send_keys(Keys.ENTER)
         await asyncio.sleep(1)
